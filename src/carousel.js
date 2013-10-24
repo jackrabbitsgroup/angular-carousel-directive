@@ -141,9 +141,9 @@ for (var i=0; i<4; i++) {
 //end: EXAMPLE usage
 */
 
-// 'use strict';
+'use strict';
 
-angular.module('jackrabbitsgroup.ang-carousel').directive('jrgCarousel', ['jrgCarouselResize', '$timeout', function (jrgCarouselResize, $timeout) {
+angular.module('jackrabbitsgroup.ang-carousel', []).directive('jrgCarousel', ['jrgCarouselResize', '$timeout', function (jrgCarouselResize, $timeout) {
   return {
 		restrict: 'A',
 		transclude: true,
@@ -308,7 +308,6 @@ angular.module('jackrabbitsgroup.ang-carousel').directive('jrgCarousel', ['jrgCa
 				function initMaxSlides(params) {
 					var ele =document.getElementById(attrs.ids.content);
 					//maxSlides =ele.children().length-1;		//-1 is because angular inserts an extra "comment" element that I can't seem to filter out with a "div" tag..
-					// maxSlides =$(ele).children().length;
 					maxSlides =angular.element(ele).children().length;
 					// console.log("maxSlides: "+maxSlides);
 					if(maxSlides <1 && params.attempt <3) {		//try again
@@ -342,8 +341,7 @@ angular.module('jackrabbitsgroup.ang-carousel').directive('jrgCarousel', ['jrgCa
 					$(ele).children().each(function() {
 						$(this).width(animateInfo.width);
 					});
-						
-					// maxSlides =$(ele).children().length;
+					
 					maxSlides =angular.element(ele).children().length;
 					
 					checkCurSlide({});
@@ -459,7 +457,6 @@ angular.module('jackrabbitsgroup.ang-carousel').directive('jrgCarousel', ['jrgCa
 						}
 						marginLeft =-1*(+scope.opts.curSlide*animateInfo.width) +animateInfo.centerOffset;
 					}
-					// $(ele).css({'margin-left':marginLeft+'px'});
 					scope.styles.content.marginLeft =marginLeft;
 					// angular.element(ele).css({'margin-left':marginLeft+'px'});
 				};
