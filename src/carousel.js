@@ -1,12 +1,10 @@
 /**
 @todo
-- same-height attr seems to break it (everything is 0 height)?
 - vertical center prev/next arrows (either position absolute negative margin hack or flexbox?)
 - add functionality / support options to bring it to parity with angular-ui carousel
 	- timing/intervals, etc.
-- remove jQuery dependency (about 5 uses left..)
 - [maybe?] option to automatically make it one slide at a time with overflow hidden, display inline-block, etc. so they just pass in slides and it looks like ui-bootstrap carousel
-	- UPDATE: this is the ONLY way it works now (at least the 1 slide at a time bit) - so may option to NOT do that and allow it to show multiple slides at a time.
+	- UPDATE: this is the ONLY way it works now (at least the 1 slide at a time bit) - so maybe option to NOT do that and allow it to show multiple slides at a time.
 
 NOTE: there's already a ui-bootstrap carousel which is similar; I wrote this one (rather than using / modifying the existing one) because:
 - I'm adding in (hammer) swipe functionality options so need to move the template to the compile function to conditionally build the HTML
@@ -500,7 +498,7 @@ var inst ={
 		var thisObj =this;
 		var defaults ={'timeout':500};
 		params =angular.extend(defaults, params);
-		$(window).resize(function(){
+		window.onresize =function() {
 			if(!thisObj.timeout) {
 				thisObj.timeout =setTimeout(function() {
 					thisObj.resize({});
@@ -508,7 +506,7 @@ var inst ={
 					thisObj.timeout =false;		//reset
 				}, params.timeout);
 			}
-		});
+		};
 	},
 	
 	//0.5.
