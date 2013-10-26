@@ -340,15 +340,8 @@ angular.module('jackrabbitsgroup.ang-carousel', []).directive('jrgCarousel', ['j
 					};
 					animateInfo.width =animateInfo.totWidth;		//set each child to width of parent (to only show one at a time)
 					
-					if(0) {
-					$(ele).children().each(function() {
-						$(this).width(animateInfo.width);
-					});
-					}
-					else {
 					for(ii =0; ii<ele.children.length; ii++) {		//use 'children' NOT 'childNodes', which will also pick up text, comment nodes, etc. - http://stackoverflow.com/questions/7072423/why-does-childnodes-return-a-number-larger-than-i-expect
 						angular.element(ele.children[ii]).css({'width':animateInfo.width.toString()+'px'});
-					}
 					}
 					
 					maxSlides =angular.element(ele).children().length;
@@ -369,18 +362,6 @@ angular.module('jackrabbitsgroup.ang-carousel', []).directive('jrgCarousel', ['j
 						var maxHeight =0;
 						var curHeight;
 						
-						if(0) {
-						$(ele).children().each(function() {
-							curHeight =$(this).height();
-							if(curHeight >maxHeight) {
-								maxHeight =curHeight;
-							}
-						});
-						$(ele).children().each(function() {
-							$(this).height(maxHeight);
-						});
-						}
-						else {
 						for(ii =0; ii<ele.children.length; ii++) {
 							curHeight =angular.element(ele.children[ii]).prop('offsetHeight');
 							if(curHeight >maxHeight) {
@@ -389,7 +370,6 @@ angular.module('jackrabbitsgroup.ang-carousel', []).directive('jrgCarousel', ['j
 						}
 						for(ii =0; ii<ele.children.length; ii++) {
 							angular.element(ele.children[ii]).css({'height':maxHeight.toString()+'px'});
-						}
 						}
 						
 					}
