@@ -1,6 +1,5 @@
 /**
 @todo
-- vertical center prev/next arrows (either position absolute negative margin hack or flexbox?)
 - add functionality / support options to bring it to parity with angular-ui carousel
 	- timing/intervals, etc.
 - [maybe?] option to automatically make it one slide at a time with overflow hidden, display inline-block, etc. so they just pass in slides and it looks like ui-bootstrap carousel
@@ -15,7 +14,8 @@ NOTE: you are responsible for using "display:inline-block" or similar to get the
 
 @dependencies
 OPTIONAL
-- font-awesome for the next & prev arrows (or you can replace it with whatever you want for the classes 'icon-chevron-left' and 'icon-chevron-right' or by passing in htmlPrev and/or htmlNext attributes of your own custom HTML)
+- font-awesome for the next & prev arrows (or you can replace it with whatever you want for the classes 'fa-chevron-left' and 'fa-chevron-right' or by passing in htmlPrev and/or htmlNext attributes of your own custom HTML)
+- less-flexbox for vertical centering the prev & next arrows
 - angular-hammer.js and hammer.js IF using hammer-swipe attribute (defaults to false so this isn't need by default and will work without it)
 	- https://github.com/randallb/angular-hammer
 	- http://eightmedia.github.io/hammer.js/
@@ -177,13 +177,13 @@ angular.module('jackrabbitsgroup.ang-carousel', []).directive('jrgCarousel', ['j
 				htmlPrev =attrs.htmlPrev;
 			}
 			else {
-				htmlPrev ="<div class='jrg-carousel-arrow'><div class='jrg-carousel-arrow-icon icon-chevron-left'></div></div>";
+				htmlPrev ="<div class='jrg-carousel-arrow'><div class='jrg-carousel-arrow-icon fa fa-chevron-left'></div></div>";
 			}
 			if(attrs.htmlNext) {
 				htmlNext =attrs.htmlNext;
 			}
 			else {
-				htmlNext ="<div class='jrg-carousel-arrow'><div class='jrg-carousel-arrow-icon icon-chevron-right'></div></div>";
+				htmlNext ="<div class='jrg-carousel-arrow'><div class='jrg-carousel-arrow-icon fa fa-chevron-right'></div></div>";
 			}
 			
 			var html="<div class='jrg-carousel-cont-outer'>"+		//MUST have outer div otherwise anything (i.e. the hammer swipe directive) will NOT be compiled since compilation does not happen on the element itself!!
@@ -193,14 +193,14 @@ angular.module('jackrabbitsgroup.ang-carousel', []).directive('jrgCarousel', ['j
 				}
 				html+=">";
 				if(attrs.showArrows) {
-					html+="<div ng-show='show.prev' class='jrg-carousel-prev' ng-click='nav(\"prev\", {})'><div class='jrg-carousel-arrow-outer'>"+htmlPrev+"</div></div>";
+					html+="<div ng-show='show.prev' class='jrg-carousel-prev' ng-click='nav(\"prev\", {})'><div class='jrg-carousel-arrow-outer flexbox center'>"+htmlPrev+"</div></div>";
 				}
 				if(attrs.swipeOverlay) {
 					html+="<div class='jrg-carousel-content-swipe'></div>";
 				}
 				html+="<div id='"+attrs.ids.content+"' class='jrg-carousel-content' style='width:{{styles.content.width}}px; margin-left:{{styles.content.marginLeft}}px;' ng-transclude></div>";
 				if(attrs.showArrows) {
-					html+="<div ng-show='show.next' class='jrg-carousel-next' ng-click='nav(\"next\", {})'><div class='jrg-carousel-arrow-outer'>"+htmlNext+"</div></div>";
+					html+="<div ng-show='show.next' class='jrg-carousel-next' ng-click='nav(\"next\", {})'><div class='jrg-carousel-arrow-outer flexbox center'>"+htmlNext+"</div></div>";
 				}
 				html+="</div>";
 			html+="</div>";
