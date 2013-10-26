@@ -17,7 +17,8 @@ config(['$routeProvider', '$locationProvider', '$compileProvider', function($rou
 	$locationProvider.html5Mode(false);		//can't use this with github pages / if don't have access to the server
 	
 	// var staticPath ='/';
-	var staticPath ='/angular-directives/angular-carousel-directive/';
+	var staticPath ='/angular-directives/angular-carousel-directive/';		//local
+	var staticPath ='/angular-carousel-directive/';		//gh-pages
 	var appPathRoute =staticPath;
 	var pagesPath =staticPath+'pages/';
 	
