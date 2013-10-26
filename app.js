@@ -14,11 +14,13 @@ config(['$routeProvider', '$locationProvider', '$compileProvider', function($rou
 	setup - whitelist, appPath, html5Mode
 	@toc 1.
 	*/
-	$locationProvider.html5Mode(true);
+	$locationProvider.html5Mode(false);		//can't use this with github pages / if don't have access to the server
 	
-	var staticPath ='/';
-	var appPathRoute ='/';
+	// var staticPath ='/';
+	var staticPath ='/angular-directives/angular-carousel-directive/';
+	var appPathRoute =staticPath;
 	var pagesPath =staticPath+'pages/';
+	
 	
 	$routeProvider.when(appPathRoute+'home', {templateUrl: pagesPath+'home/home.html'});
 
