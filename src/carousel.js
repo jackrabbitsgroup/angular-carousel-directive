@@ -334,9 +334,7 @@ angular.module('jackrabbitsgroup.ang-carousel', []).directive('jrgCarousel', ['j
 					var ii;
 					var ele =document.getElementById(attrs.ids.content);
 					animateInfo ={
-						'totWidth':$(ele).parent().outerWidth(true)
-						// 'totWidth':angular.element(ele).parent().outerWidth(true)		//no outerWidth function without jQuery
-						// 'width':$(ele).children(":first-child").outerWidth(true),
+						'totWidth':angular.element(ele).parent().prop('offsetWidth')		//@todo - this may not get border/margin like jQuery .outerWidth(true) does?
 					};
 					animateInfo.width =animateInfo.totWidth;		//set each child to width of parent (to only show one at a time)
 					
