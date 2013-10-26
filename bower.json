@@ -1,5 +1,5 @@
 {
-	"name": "angular-carousel-1",
+	"name": "angular-carousel-directive",
 	"version": "0.0.1",
 	"authors": [
 		"Luke Madera <luke.madera@gmail.com>"
@@ -10,10 +10,9 @@
 		"angular",
 		"AngularJS",
 		"carousel",
-		"ang-carousel",
 		"ng-carousel",
 		"angular-carousel",
-		"angular-carousel-1"
+		"angular-carousel-directive"
 	],
 	"license": "MIT",
 	"ignore": [
