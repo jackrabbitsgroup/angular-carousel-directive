@@ -1,0 +1,24 @@
+{
+	"name": "angular-carousel-directive-demo",
+	"version": "0.0.1",
+	"authors": [
+		"Luke Madera <luke.madera@gmail.com>"
+	],
+	"description": "Demo",
+	"keywords": [
+	],
+	"license": "MIT",
+	"ignore": [
+		"**/.*",
+		"node_modules",
+		"bower_components",
+		"test",
+		"tests"
+	],
+	"dependencies": {
+		"lesshat":"latest",
+		"font-awesome":"latest"
+	},
+	"devDependencies": {
+	}
+}
