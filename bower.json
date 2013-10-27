@@ -29,9 +29,5 @@
 		"angular-touch":"~1.2.0"
 	},
 	"devDependencies": {
-		"lesshat":"latest",
-		"angular-route":"~1.2.0",
-		"font-awesome":"latest",
-		"less-flexbox":"latest"
 	}
 }

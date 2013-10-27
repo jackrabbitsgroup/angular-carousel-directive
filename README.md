@@ -8,7 +8,9 @@ http://jackrabbitsgroup.github.io/angular-carousel-directive/
 - optional
 	- `font-awesome` (for next and previous arrow icons - though you can use whatever you want)
 	- `less-flexbox` (for vertical centering the next and previous arrows)
+		- `lesshat`
 	- `angular-hammer` and `hammerjs` IF using hammer-swipe attribute for swiping to change the slide
+See `bower.json` in the `gh-pages` branch for a full list / more details
 
 ## Install
 ### Bower
