@@ -26,7 +26,7 @@ OPTIONAL
 	0.7. scope.$on(attrs.ids.resizeEvt,..
 1. initMaxSlides function
 2. updateAnimateInfo function
-3. scope.$on('lmContentSliderReInit', ..
+3. scope.$on('jrgCarouselReInit', ..
 	// broadcast this to update if content changes
 4. scope.nav function
 5. scope.$watch('opts.curSlide',..
@@ -141,7 +141,7 @@ for (var i=0; i<4; i++) {
 
 'use strict';
 
-angular.module('jackrabbitsgroup.ang-carousel', []).directive('jrgCarousel', ['jrgCarouselResize', '$timeout', function (jrgCarouselResize, $timeout) {
+angular.module('jackrabbitsgroup.angular-carousel-directive', []).directive('jrgCarousel', ['jrgCarouselResize', '$timeout', function (jrgCarouselResize, $timeout) {
   return {
 		restrict: 'A',
 		transclude: true,
@@ -400,11 +400,11 @@ angular.module('jackrabbitsgroup.ang-carousel', []).directive('jrgCarousel', ['j
 				
 				/**
 				@toc 3.
-				@method $scope.$on('lmContentSliderReInit', ..
+				@method $scope.$on('jrgCarouselReInit', ..
 				@param args
 					nav =mixed; string of 'prev', 'next', 'first', 'last' OR int of slide to go to
 				*/
-				scope.$on('lmContentSliderReInit', function(evt, args) {
+				scope.$on('jrgCarouselReInit', function(evt, args) {
 					updateAnimateInfo({});
 					var ppTemp ={};
 					var to =scope.opts.curSlide;
