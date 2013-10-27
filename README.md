@@ -18,6 +18,8 @@ See `bower.json` in the `gh-pages` branch for a full list / more details
 OR
 - run `bower install angular-carousel-directive`
 
+Then include the file and include the module in angular (i.e. in `app.js`) - `jackrabbitsgroup.angular-carousel-directive`
+
 ## Documentation
 See the `carousel.js` file top comments for usage examples and documentation
 https://github.com/jackrabbitsgroup/angular-carousel-directive/blob/master/carousel.js
