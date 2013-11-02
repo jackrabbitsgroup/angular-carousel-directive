@@ -5,7 +5,6 @@
 		"Luke Madera <luke.madera@gmail.com>"
 	],
 	"description": "AngularJS carousel",
-	"main": "src/carousel.js",
 	"keywords": [
 		"angular",
 		"AngularJS",
