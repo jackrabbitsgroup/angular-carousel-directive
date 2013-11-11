@@ -19,7 +19,7 @@ config(['$routeProvider', '$locationProvider', '$compileProvider', function($rou
 	// var staticPath ='/';
 	var staticPath;
 	staticPath ='/angular-directives/angular-carousel-directive/';		//local
-	// staticPath ='/angular-carousel-directive/';		//gh-pages
+	staticPath ='/angular-carousel-directive/';		//gh-pages
 	var appPathRoute =staticPath;
 	var pagesPath =staticPath+'pages/';
 	
