@@ -17,7 +17,7 @@ See `bower.json` and `index.html` in the `gh-pages` branch for a full list / mor
 	1. Bower
 		1. add `"angular-carousel-directive": "latest"` to your `bower.json` file then run `bower install` OR run `bower install angular-carousel-directive`
 2. include the files in your app
-	1. carousel.js
+	1. carousel.min.js
 	2. carousel.less
 3. include the module in angular (i.e. in `app.js`) - `jackrabbitsgroup.angular-carousel-directive`
 

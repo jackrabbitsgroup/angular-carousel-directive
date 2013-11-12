@@ -149,7 +149,7 @@ angular.module('jackrabbitsgroup.angular-carousel-directive', []).directive('jrg
 			opts: '=?'		//make optional and avoid errors with '?'
 		},
 
-		compile: function(element, attrs) {
+		template: function(element, attrs) {
 			var defaults ={'sameHeight':'0', 'centerOffset':'0', 'navNumItems':'1', 'alwaysShowNav':'0', 'showArrows':'1', 'hammerSwipe':'0', 'swipeOverlay':'0'};
 			for(var xx in defaults) {
 				if(attrs[xx] ===undefined) {
@@ -205,277 +205,277 @@ angular.module('jackrabbitsgroup.angular-carousel-directive', []).directive('jrg
 				html+="</div>";
 			html+="</div>";
 			
-			element.replaceWith(html);
+			return html;
+		},
 			
-			return function(scope, element, attrs) {
-				/**
-				setup
-				@toc 0.
-				*/
-				scope.show ={
-					prev: true,
-					next: true
-				};
-				scope.styles ={
-					content: {
-						width: 0,
-						marginLeft: 0
-					}
-				};
-				
-				var defaultOpts ={
-					curSlide: 0
-				};
-				if(scope.opts ===undefined) {
-					scope.opts ={};
+		link: function(scope, element, attrs) {
+			/**
+			setup
+			@toc 0.
+			*/
+			scope.show ={
+				prev: true,
+				next: true
+			};
+			scope.styles ={
+				content: {
+					width: 0,
+					marginLeft: 0
 				}
-				scope.opts =angular.extend(defaultOpts, scope.opts);
+			};
+			
+			var defaultOpts ={
+				curSlide: 0
+			};
+			if(scope.opts ===undefined) {
+				scope.opts ={};
+			}
+			scope.opts =angular.extend(defaultOpts, scope.opts);
+			
+			var maxSlides;
+			var page =0;		//if navNumItems is greater than 1, this will store the current page / set of slides we're on (otherwise page will be the same as curSlide
+			var maxPages;		//this stores total pages (where pages are a collection of slides equal to navNumSlides - typically the amount of slides that are visible at the same time). If navNumItems is 1, this will be the same as maxSlides
+			var animateInfo, navNumItems =attrs.navNumItems, alwaysShowNav =false;
+			if(attrs.alwaysShowNav) {
+				alwaysShowNav =true;
+			}
+			
+			if(attrs.navNumItems !==undefined && attrs.navNumItems !='width') {
+				navNumItems =attrs.navNumItems;
+			}
+			if(attrs.alwaysShowNav !==undefined) {
+				alwaysShowNav =attrs.alwaysShowNav;
+			}
+			
+			/**
+			@toc 0.5.
+			@method init
+			*/
+			function init(params) {
+				initMaxSlides({'attempt':1});
 				
-				var maxSlides;
-				var page =0;		//if navNumItems is greater than 1, this will store the current page / set of slides we're on (otherwise page will be the same as curSlide
-				var maxPages;		//this stores total pages (where pages are a collection of slides equal to navNumSlides - typically the amount of slides that are visible at the same time). If navNumItems is 1, this will be the same as maxSlides
-				var animateInfo, navNumItems =attrs.navNumItems, alwaysShowNav =false;
-				if(attrs.alwaysShowNav) {
-					alwaysShowNav =true;
-				}
-				
-				if(attrs.navNumItems !==undefined && attrs.navNumItems !='width') {
-					navNumItems =attrs.navNumItems;
-				}
-				if(attrs.alwaysShowNav !==undefined) {
-					alwaysShowNav =attrs.alwaysShowNav;
-				}
-				
-				/**
-				@toc 0.5.
-				@method init
-				*/
-				function init(params) {
-					initMaxSlides({'attempt':1});
-					
-					jrgCarouselResize.addCallback(attrs.ids.resizeEvt, {'evtName':attrs.ids.resizeEvt, 'args':[]}, {});
-				}
-				
-				/**
-				@toc 0.7.
-				@method scope.$on(attrs.ids.resizeEvt,..
-				*/
-				scope.$on(attrs.ids.resizeEvt, function(evt, params) {
-					// var delayReInit =1000;
-					var delayReInit =500;
-					//console.log('resize');
+				jrgCarouselResize.addCallback(attrs.ids.resizeEvt, {'evtName':attrs.ids.resizeEvt, 'args':[]}, {});
+			}
+			
+			/**
+			@toc 0.7.
+			@method scope.$on(attrs.ids.resizeEvt,..
+			*/
+			scope.$on(attrs.ids.resizeEvt, function(evt, params) {
+				// var delayReInit =1000;
+				var delayReInit =500;
+				//console.log('resize');
+				updateAnimateInfo({reNav:true});
+				//call again after timeout just in case content is changing and not done/resized yet..
+				$timeout(function() {
 					updateAnimateInfo({reNav:true});
-					//call again after timeout just in case content is changing and not done/resized yet..
-					$timeout(function() {
-						updateAnimateInfo({reNav:true});
-					}, delayReInit);
-				});
-				
-				/**
-				Error checks curSlide to ensure it's valid
-				@toc 0.8.
-				@method checkCurSlide
-				*/
-				function checkCurSlide(params) {
-					if(typeof(scope.opts.curSlide) =='number') {
-						if(scope.opts.curSlide <0) {
-							scope.opts.curSlide =0;
-						}
-						else if(scope.opts.curSlide >=maxSlides) {
-							scope.opts.curSlide =(maxSlides-1);		//-1 since 0 indexed
-						}
+				}, delayReInit);
+			});
+			
+			/**
+			Error checks curSlide to ensure it's valid
+			@toc 0.8.
+			@method checkCurSlide
+			*/
+			function checkCurSlide(params) {
+				if(typeof(scope.opts.curSlide) =='number') {
+					if(scope.opts.curSlide <0) {
+						scope.opts.curSlide =0;
 					}
-					else if(typeof(scope.opts.curSlide) =='string') {
-						var allowedStrings =['first', 'last', 'next', 'prev', 'all'];		//hardcoded must match what's used in nav
-						if(allowedStrings.indexOf(scope.opts.curSlide) <0) {
-							scope.opts.curSlide =0;
-						}
+					else if(scope.opts.curSlide >=maxSlides) {
+						scope.opts.curSlide =(maxSlides-1);		//-1 since 0 indexed
 					}
-					else {			//invalid catch-all: set to 0
-						// console.log('jrgCarousel invalid curSlide value: '+scope.opts.curSlide);
+				}
+				else if(typeof(scope.opts.curSlide) =='string') {
+					var allowedStrings =['first', 'last', 'next', 'prev', 'all'];		//hardcoded must match what's used in nav
+					if(allowedStrings.indexOf(scope.opts.curSlide) <0) {
 						scope.opts.curSlide =0;
 					}
 				}
-				
-				/**
-				@toc 1.
-				@method initMaxSlides
-				@param params
-					attempt =int of which attempt (sometimes have loading/timing issue; so set timeout and try again for an attempt or two to see if get some data..)
-				*/
-				function initMaxSlides(params) {
-					var ele =document.getElementById(attrs.ids.content);
-					//maxSlides =ele.children().length-1;		//-1 is because angular inserts an extra "comment" element that I can't seem to filter out with a "div" tag..
-					maxSlides =angular.element(ele).children().length;
-					// console.log("maxSlides: "+maxSlides);
-					if(maxSlides <1 && params.attempt <3) {		//try again
-						params.attempt++;
-						//setTimeout(function() {
-						$timeout(function() {
-							initMaxSlides(params);
-						}, 200);
-					}
-					else {
-						updateAnimateInfo({});
-					
-						scope.nav(scope.opts.curSlide, {});		//init
-					}
+				else {			//invalid catch-all: set to 0
+					// console.log('jrgCarousel invalid curSlide value: '+scope.opts.curSlide);
+					scope.opts.curSlide =0;
 				}
-				
-				/**
-				@toc 2.
-				@method updateAnimateInfo
-				@param {Object} [params]
-					@param {Boolean} [reNav] True to re-call nav (i.e. for after resize to get back to the correct slide)
-				*/
-				function updateAnimateInfo(params) {
-					var ii;
-					var ele =document.getElementById(attrs.ids.content);
-					animateInfo ={
-						'totWidth':angular.element(ele).parent().prop('offsetWidth')		//@todo - this may not get border/margin like jQuery .outerWidth(true) does?
-					};
-					animateInfo.width =animateInfo.totWidth;		//set each child to width of parent (to only show one at a time)
-					
-					for(ii =0; ii<ele.children.length; ii++) {		//use 'children' NOT 'childNodes', which will also pick up text, comment nodes, etc. - http://stackoverflow.com/questions/7072423/why-does-childnodes-return-a-number-larger-than-i-expect
-						angular.element(ele.children[ii]).css({'width':animateInfo.width.toString()+'px'});
-					}
-					
-					maxSlides =angular.element(ele).children().length;
-					
-					checkCurSlide({});
-					
-					// scope.styles.content.width =animateInfo.totWidth;		//do NOT set it to parent; needs to be full width of ALL slides side by side
-					scope.styles.content.width =animateInfo.width*maxSlides;
-					// console.log('animateInfo: '+JSON.stringify(animateInfo)+' maxSlides: '+maxSlides);
-					
-					//if num slides is calculated dynamically, do it now
-					if(attrs.navNumItems !==undefined && attrs.navNumItems =='width') {
-						navNumItems =Math.floor(animateInfo.totWidth /animateInfo.width);
-					}
-					
-					//makes them all the same height..
-					if(attrs.sameHeight) {
-						var maxHeight =0;
-						var curHeight;
-						
-						for(ii =0; ii<ele.children.length; ii++) {
-							curHeight =angular.element(ele.children[ii]).prop('offsetHeight');
-							if(curHeight >maxHeight) {
-								maxHeight =curHeight;
-							}
-						}
-						for(ii =0; ii<ele.children.length; ii++) {
-							angular.element(ele.children[ii]).css({'height':maxHeight.toString()+'px'});
-						}
-						
-					}
-					//end: make them all same height
-					
-					if(attrs.centerOffset) {
-						animateInfo.centerOffset =attrs.centerOffset*1;
-					}
-					else {		//center
-						animateInfo.centerOffset =animateInfo.totWidth/2 -animateInfo.width/2;		//holds the position of the first slide margin-left when it's centered
-					}
-					
-					//console.log(animateInfo.totWidth+" "+animateInfo.width*maxSlides);
-					//hide nav arrows if content is less than total width; otherwise show them
-					if(!alwaysShowNav && animateInfo.totWidth >animateInfo.width*maxSlides) {		//wider than content = no arrows
-						scope.show.prev =false;
-						scope.show.next =false;
-						//nav to 0 to ensure all content is visible
-						//scope.nav('first', {});
-						scope.nav('all', {});
-					}
-					else {
-						if(attrs.showArrows) {
-							scope.show.prev =true;
-							scope.show.next =true;
-						}
-						if(params.reNav) {
-							scope.nav(scope.opts.curSlide, {});
-						}
-					}
+			}
+			
+			/**
+			@toc 1.
+			@method initMaxSlides
+			@param params
+				attempt =int of which attempt (sometimes have loading/timing issue; so set timeout and try again for an attempt or two to see if get some data..)
+			*/
+			function initMaxSlides(params) {
+				var ele =document.getElementById(attrs.ids.content);
+				//maxSlides =ele.children().length-1;		//-1 is because angular inserts an extra "comment" element that I can't seem to filter out with a "div" tag..
+				maxSlides =angular.element(ele).children().length;
+				// console.log("maxSlides: "+maxSlides);
+				if(maxSlides <1 && params.attempt <3) {		//try again
+					params.attempt++;
+					//setTimeout(function() {
+					$timeout(function() {
+						initMaxSlides(params);
+					}, 200);
 				}
-				
-				/**
-				@toc 3.
-				@method $scope.$on('jrgCarouselReInit', ..
-				@param args
-					nav =mixed; string of 'prev', 'next', 'first', 'last' OR int of slide to go to
-				*/
-				scope.$on('jrgCarouselReInit', function(evt, args) {
+				else {
 					updateAnimateInfo({});
-					var ppTemp ={};
-					var to =scope.opts.curSlide;
-					if(args.nav) {
-						to =args.nav;
-					}
-					scope.nav(to, ppTemp);
-				});
 				
-				/**
-				@toc 4.
-				@method scope.nav
-				@param to =mixed; string of 'prev', 'next', 'first', 'last' 'all' (shows all content - this assumes total width is larger than all slides together) OR int of slide to go to
-				*/
-				scope.nav =function(to, params) {
-					var ele =document.getElementById(attrs.ids.content);
-					var marginLeft;
-					//console.log("nav: "+to);
-					if(to =='all') {
-						marginLeft =Math.floor((animateInfo.totWidth - animateInfo.width*maxSlides) /2);
-					}
-					else {
-						if(to =='prev') {
-							if(scope.opts.curSlide >0) {
-								//scope.opts.curSlide--;
-								scope.opts.curSlide =scope.opts.curSlide -navNumItems;
-								if(scope.opts.curSlide <0) {
-									scope.opts.curSlide =0;
-								}
-							}
-						}
-						else if(to =='next') {
-							if(scope.opts.curSlide <(maxSlides-navNumItems)) {
-							//if(scope.opts.curSlide <(maxSlides-1)) {
-								//scope.opts.curSlide++;
-								scope.opts.curSlide =scope.opts.curSlide +navNumItems;
-								if(scope.opts.curSlide >=(maxSlides-1)) {
-									scope.opts.curSlide =(maxSlides-1);
-								}
-							}
-						}
-						else if(to =='first') {
-							scope.opts.curSlide =0;
-						}
-						else if(to =='last') {
-							//scope.opts.curSlide =maxSlides-1;
-							scope.opts.curSlide =maxSlides -navNumItems;
-						}
-						else {		//must be an int of which slide to go to
-							scope.opts.curSlide =to;
-						}
-						marginLeft =-1*(+scope.opts.curSlide*animateInfo.width) +animateInfo.centerOffset;
-					}
-					scope.styles.content.marginLeft =marginLeft;
-					// angular.element(ele).css({'margin-left':marginLeft+'px'});
+					scope.nav(scope.opts.curSlide, {});		//init
+				}
+			}
+			
+			/**
+			@toc 2.
+			@method updateAnimateInfo
+			@param {Object} [params]
+				@param {Boolean} [reNav] True to re-call nav (i.e. for after resize to get back to the correct slide)
+			*/
+			function updateAnimateInfo(params) {
+				var ii;
+				var ele =document.getElementById(attrs.ids.content);
+				animateInfo ={
+					'totWidth':angular.element(ele).parent().prop('offsetWidth')		//@todo - this may not get border/margin like jQuery .outerWidth(true) does?
 				};
+				animateInfo.width =animateInfo.totWidth;		//set each child to width of parent (to only show one at a time)
 				
-				/**
-				@toc 5.
-				@method $scope.$watch('opts.curSlide',..
-				*/
-				scope.$watch('opts.curSlide', function(newVal, oldVal) {
-					if(!angular.equals(oldVal, newVal)) {		//very important to do this for performance reasons since $watch runs all the time
-						// updateAnimateInfo({});
-						checkCurSlide({});
+				for(ii =0; ii<ele.children.length; ii++) {		//use 'children' NOT 'childNodes', which will also pick up text, comment nodes, etc. - http://stackoverflow.com/questions/7072423/why-does-childnodes-return-a-number-larger-than-i-expect
+					angular.element(ele.children[ii]).css({'width':animateInfo.width.toString()+'px'});
+				}
+				
+				maxSlides =angular.element(ele).children().length;
+				
+				checkCurSlide({});
+				
+				// scope.styles.content.width =animateInfo.totWidth;		//do NOT set it to parent; needs to be full width of ALL slides side by side
+				scope.styles.content.width =animateInfo.width*maxSlides;
+				// console.log('animateInfo: '+JSON.stringify(animateInfo)+' maxSlides: '+maxSlides);
+				
+				//if num slides is calculated dynamically, do it now
+				if(attrs.navNumItems !==undefined && attrs.navNumItems =='width') {
+					navNumItems =Math.floor(animateInfo.totWidth /animateInfo.width);
+				}
+				
+				//makes them all the same height..
+				if(attrs.sameHeight) {
+					var maxHeight =0;
+					var curHeight;
+					
+					for(ii =0; ii<ele.children.length; ii++) {
+						curHeight =angular.element(ele.children[ii]).prop('offsetHeight');
+						if(curHeight >maxHeight) {
+							maxHeight =curHeight;
+						}
+					}
+					for(ii =0; ii<ele.children.length; ii++) {
+						angular.element(ele.children[ii]).css({'height':maxHeight.toString()+'px'});
+					}
+					
+				}
+				//end: make them all same height
+				
+				if(attrs.centerOffset) {
+					animateInfo.centerOffset =attrs.centerOffset*1;
+				}
+				else {		//center
+					animateInfo.centerOffset =animateInfo.totWidth/2 -animateInfo.width/2;		//holds the position of the first slide margin-left when it's centered
+				}
+				
+				//console.log(animateInfo.totWidth+" "+animateInfo.width*maxSlides);
+				//hide nav arrows if content is less than total width; otherwise show them
+				if(!alwaysShowNav && animateInfo.totWidth >animateInfo.width*maxSlides) {		//wider than content = no arrows
+					scope.show.prev =false;
+					scope.show.next =false;
+					//nav to 0 to ensure all content is visible
+					//scope.nav('first', {});
+					scope.nav('all', {});
+				}
+				else {
+					if(attrs.showArrows) {
+						scope.show.prev =true;
+						scope.show.next =true;
+					}
+					if(params.reNav) {
 						scope.nav(scope.opts.curSlide, {});
 					}
-				});
-				
-				init({});
+				}
+			}
+			
+			/**
+			@toc 3.
+			@method $scope.$on('jrgCarouselReInit', ..
+			@param args
+				nav =mixed; string of 'prev', 'next', 'first', 'last' OR int of slide to go to
+			*/
+			scope.$on('jrgCarouselReInit', function(evt, args) {
+				updateAnimateInfo({});
+				var ppTemp ={};
+				var to =scope.opts.curSlide;
+				if(args.nav) {
+					to =args.nav;
+				}
+				scope.nav(to, ppTemp);
+			});
+			
+			/**
+			@toc 4.
+			@method scope.nav
+			@param to =mixed; string of 'prev', 'next', 'first', 'last' 'all' (shows all content - this assumes total width is larger than all slides together) OR int of slide to go to
+			*/
+			scope.nav =function(to, params) {
+				var ele =document.getElementById(attrs.ids.content);
+				var marginLeft;
+				//console.log("nav: "+to);
+				if(to =='all') {
+					marginLeft =Math.floor((animateInfo.totWidth - animateInfo.width*maxSlides) /2);
+				}
+				else {
+					if(to =='prev') {
+						if(scope.opts.curSlide >0) {
+							//scope.opts.curSlide--;
+							scope.opts.curSlide =scope.opts.curSlide -navNumItems;
+							if(scope.opts.curSlide <0) {
+								scope.opts.curSlide =0;
+							}
+						}
+					}
+					else if(to =='next') {
+						if(scope.opts.curSlide <(maxSlides-navNumItems)) {
+						//if(scope.opts.curSlide <(maxSlides-1)) {
+							//scope.opts.curSlide++;
+							scope.opts.curSlide =scope.opts.curSlide +navNumItems;
+							if(scope.opts.curSlide >=(maxSlides-1)) {
+								scope.opts.curSlide =(maxSlides-1);
+							}
+						}
+					}
+					else if(to =='first') {
+						scope.opts.curSlide =0;
+					}
+					else if(to =='last') {
+						//scope.opts.curSlide =maxSlides-1;
+						scope.opts.curSlide =maxSlides -navNumItems;
+					}
+					else {		//must be an int of which slide to go to
+						scope.opts.curSlide =to;
+					}
+					marginLeft =-1*(+scope.opts.curSlide*animateInfo.width) +animateInfo.centerOffset;
+				}
+				scope.styles.content.marginLeft =marginLeft;
+				// angular.element(ele).css({'margin-left':marginLeft+'px'});
 			};
+			
+			/**
+			@toc 5.
+			@method $scope.$watch('opts.curSlide',..
+			*/
+			scope.$watch('opts.curSlide', function(newVal, oldVal) {
+				if(!angular.equals(oldVal, newVal)) {		//very important to do this for performance reasons since $watch runs all the time
+					// updateAnimateInfo({});
+					checkCurSlide({});
+					scope.nav(scope.opts.curSlide, {});
+				}
+			});
+			
+			init({});
 		}
 		
 		// controller: function($scope, $element, $attrs) {
