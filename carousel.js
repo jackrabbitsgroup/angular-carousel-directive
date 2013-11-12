@@ -149,6 +149,7 @@ angular.module('jackrabbitsgroup.angular-carousel-directive', []).directive('jrg
 			opts: '=?'		//make optional and avoid errors with '?'
 		},
 
+		replace: true,
 		template: function(element, attrs) {
 			var defaults ={'sameHeight':'0', 'centerOffset':'0', 'navNumItems':'1', 'alwaysShowNav':'0', 'showArrows':'1', 'hammerSwipe':'0', 'swipeOverlay':'0'};
 			for(var xx in defaults) {
