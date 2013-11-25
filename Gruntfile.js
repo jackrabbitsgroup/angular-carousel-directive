@@ -92,8 +92,15 @@ module.exports = function(grunt) {
 					options: {
 					},
 					files: {
-						"main.css": "_base.less"
+						"main.css": "_base.less",
+						"carousel.css": "_carousel.less"
 					}
+				}
+			},
+			cssmin: {
+				dev: {
+					src: ['carousel.css'],
+					dest: 'carousel.min.css'
 				}
 			}/*,
 			karma: {
@@ -112,7 +119,7 @@ module.exports = function(grunt) {
 		*/
 		// Default task(s).
 		// grunt.registerTask('default', ['jshint:beforeconcat', 'less:development', 'concat:devJs', 'concat:devCss']);
-		grunt.registerTask('default', ['jshint:beforeconcatQ', 'less:development', 'uglify:build']);
+		grunt.registerTask('default', ['jshint:beforeconcatQ', 'less:development', 'cssmin', 'uglify:build']);
 	
 	}
 	init({});		//initialize here for defaults (init may be called again later within a task)

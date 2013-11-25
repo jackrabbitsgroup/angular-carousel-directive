@@ -1,0 +1,68 @@
+/* jrg-carousel */
+.jrg-carousel-cont-outer {
+  /*
+	//make position absolute to get full height
+	position:absolute;
+	top:0;
+	bottom:0;
+	width:100%;
+	*/
+}
+.jrg-carousel-cont {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+.jrg-carousel-content-swipe {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  z-index: 999;
+}
+.jrg-carousel-content {
+  -webkit-transition: margin-left 0.5s;
+  -moz-transition: margin-left 0.5s;
+  -o-transition: margin-left 0.5s;
+  transition: margin-left 0.5s;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  height: 100%;
+}
+.jrg-carousel-arrow-outer {
+  width: 100%;
+  height: 100%;
+}
+.jrg-carousel-arrow {
+  cursor: pointer;
+  /*
+	background-color:white;
+	opacity:.75;
+	color:black;
+	border-radius:1em;
+	*/
+  height: 50px;
+  width: 50px;
+  text-align: center;
+}
+.jrg-carousel-arrow-icon {
+  font-size: 37px;
+  width: 37px;
+  margin: 0 auto;
+}
+.jrg-carousel-prev,
+.jrg-carousel-next {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50px;
+  z-index: 100;
+}
+.jrg-carousel-prev {
+  left: 0;
+}
+.jrg-carousel-next {
+  right: 0;
+}
