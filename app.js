@@ -18,13 +18,17 @@ config(['$routeProvider', '$locationProvider', '$compileProvider', function($rou
 	
 	// var staticPath ='/';
 	var staticPath;
-	staticPath ='/angular-directives/angular-carousel-directive/';		//local
+	// staticPath ='/angular-directives/angular-carousel-directive/';		//local
+	staticPath ='/';		//local (nodejs)
 	staticPath ='/angular-carousel-directive/';		//gh-pages
 	var appPathRoute =staticPath;
 	var pagesPath =staticPath+'pages/';
 	
 	
 	$routeProvider.when(appPathRoute+'home', {templateUrl: pagesPath+'home/home.html'});
+	
+	$routeProvider.when(appPathRoute+'basic', {templateUrl: pagesPath+'basic/basic.html'});
+	$routeProvider.when(appPathRoute+'swipe', {templateUrl: pagesPath+'swipe/swipe.html'});
 
 	$routeProvider.otherwise({redirectTo: appPathRoute+'home'});
 	
