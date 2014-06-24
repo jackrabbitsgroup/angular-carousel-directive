@@ -1,5 +1,13 @@
 Version numbers correspond to `bower.json` version (package.json files is NOT necessarily in sync)
 
+# 1.0.6 (2014.06.24)
+## Features
+- remove hammer.js dependency and switch to native ngTouch Angular swipe support
+
+## Breaking Changes
+- rename `hammer-swipe` attribute to `swipe`
+
+
 # 1.0.5
 ## Features
 - generate carousel.css and carousel.min.css for non LESS support/use

@@ -6,7 +6,7 @@
 	- UPDATE: this is the ONLY way it works now (at least the 1 slide at a time bit) - so maybe option to NOT do that and allow it to show multiple slides at a time.
 
 NOTE: there's already a ui-bootstrap carousel which is similar; I wrote this one (rather than using / modifying the existing one) because:
-- I'm adding in (hammer) swipe functionality options so need to move the template to the compile function to conditionally build the HTML
+- I'm adding in swipe functionality options so need to move the template to the compile function to conditionally build the HTML
 - I want it to work without twitter bootstrap (which the existing one didn't seem to)
 
 Takes a parent element with a bunch of children and makes the children horizontally scrollable. The children can be any html; this will use the .wrap function to wrap the children and add previous & next clickable arrows as well as touch swipe support to scroll through content horizontally
@@ -16,9 +16,7 @@ NOTE: you are responsible for using "display:inline-block" or similar to get the
 OPTIONAL
 - font-awesome for the next & prev arrows (or you can replace it with whatever you want for the classes 'fa-chevron-left' and 'fa-chevron-right' or by passing in htmlPrev and/or htmlNext attributes of your own custom HTML)
 - less-flexbox for vertical centering the prev & next arrows
-- angular-hammer.js and hammer.js IF using hammer-swipe attribute (defaults to false so this isn't need by default and will work without it)
-	- https://github.com/randallb/angular-hammer
-	- http://eightmedia.github.io/hammer.js/
+- ngTouch IF using swipe attribute (defaults to false so this isn't need by default and will work without it)
 
 //TOC
 0. setup
@@ -50,7 +48,7 @@ attrs
 	@param {String} [htmlNext] HTML for "next" (right) arrow (otherwise default styles will be used)
 	@param {Number|String} [navNumItems =0] Either int of number of slides to nav through on each click OR string of 'width' to calculate number of slides based on total width (will show all new items on nav)
 	@param {Number} [alwaysShowNav =0] 1 if want to NEVER hide arrows (even if all content could fit so there's no need to scroll)	//@todo this is mostly to avoid an issue with centering where there's no nav even though some content is off the screen.. just fix this issue instead??
-	@param {Number} [hammerSwipe =0] 1 to supprt hammer.js swiping to change slides
+	@param {Number} [swipe =0] 1 to supprt swiping to change slides
 	@param {Number} [swipeOverlay =0] 1 to put a transparent div on top of all the slides for swiping (since swipe doesn't work on images). NOTE: this will make all your content un-clickable/actionable!!
 
 
@@ -103,9 +101,9 @@ for (var i=0; i<4; i++) {
 
 
 
-//2. (hammer) swipe
+//2. swipe
 partial / html:
-<div jrg-carousel hammer-swipe='1' swipe-overlay='1' opts='opts'>
+<div jrg-carousel swipe='1' swipe-overlay='1' opts='opts'>
 	<div ng-repeat='slide in slides' style='display:inline-block; text-align:center; vertical-align:top;'>		<!-- styles are optional and should be moved to a class / stylesheet; this centers things and makes them display side by side -->
 		<!-- custom content here -->
 		<img ng-src='{{slide.image}}' style='margin:auto; max-width:100%;'>		<!-- styles are optional and should be moved to a class / stylehseet; this makes the content/images dynamic full width. Remove max-width:100%; for them to keep their size and be centered. Make sure NOT to use 'width:100%;' as this will stretch tall, narrow images. -->
@@ -151,14 +149,14 @@ angular.module('jackrabbitsgroup.angular-carousel-directive', []).directive('jrg
 
 		replace: true,
 		template: function(element, attrs) {
-			var defaults ={'sameHeight':'0', 'centerOffset':'0', 'navNumItems':'1', 'alwaysShowNav':'0', 'showArrows':'1', 'hammerSwipe':'0', 'swipeOverlay':'0'};
+			var defaults ={'sameHeight':'0', 'centerOffset':'0', 'navNumItems':'1', 'alwaysShowNav':'0', 'showArrows':'1', 'swipe':'0', 'swipeOverlay':'0'};
 			for(var xx in defaults) {
 				if(attrs[xx] ===undefined) {
 					attrs[xx] =defaults[xx];
 				}
 			}
 			//convert to int
-			var attrsToInt =['sameHeight', 'centerOffset', 'navNumItems', 'alwaysShowNav', 'showArrows', 'hammerSwipe', 'swipeOverlay'];
+			var attrsToInt =['sameHeight', 'centerOffset', 'navNumItems', 'alwaysShowNav', 'showArrows', 'swipe', 'swipeOverlay'];
 			for(var ii=0; ii<attrsToInt.length; ii++) {
 				attrs[attrsToInt[ii]] =parseInt(attrs[attrsToInt[ii]], 10);
 			}
@@ -187,10 +185,10 @@ angular.module('jackrabbitsgroup.angular-carousel-directive', []).directive('jrg
 				htmlNext ="<div class='jrg-carousel-arrow'><div class='jrg-carousel-arrow-icon fa fa-chevron-right'></div></div>";
 			}
 			
-			var html="<div class='jrg-carousel-cont-outer'>"+		//MUST have outer div otherwise anything (i.e. the hammer swipe directive) will NOT be compiled since compilation does not happen on the element itself!!
+			var html="<div class='jrg-carousel-cont-outer'>"+		//MUST have outer div otherwise anything (i.e. the swipe directive) will NOT be compiled since compilation does not happen on the element itself!!
 				"<div class='jrg-carousel-cont' ";
-				if(attrs.hammerSwipe) {
-					html+="hm-swipeleft='nav(\"next\", {})' hm-swiperight='nav(\"prev\", {})' hm-options='{swipe_velocity: 0.2}' ";
+				if(attrs.swipe) {
+					html+="ng-swipe-left='nav(\"next\", {})' ng-swipe-right='nav(\"prev\", {})' ";
 				}
 				html+=">";
 				if(attrs.showArrows) {
